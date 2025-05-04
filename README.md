@@ -22,13 +22,15 @@ Police Portal: Track & manage cases like a pro.
 - Patrol Zones Portal: Monitor zones with an interactive map and live crime data.
 
 🚀 Tech Used:
-Frontend: HTML5, CSS3, JavaScript (ES6), Bootstrap 5
 
-Libraries: Leaflet.js (maps), Boxicons (icons), Bootstrap JS
+- Frontend: HTML5, CSS3, JavaScript (ES6), Bootstrap 5
 
-Extras: Real-time clock, search/filter, dynamic content
+- Libraries: Leaflet.js (maps), Boxicons (icons), Bootstrap JS
+
+- Extras: Real-time clock, search/filter, dynamic content
 
 ⚡ Installation:
+
 Clone the repo:
 git clone https://github.com/username/crime-management-system.git
 
