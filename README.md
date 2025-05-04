@@ -28,14 +28,13 @@ Police Portal: Track & manage cases like a pro.
 - Libraries: Leaflet.js (maps), Boxicons (icons), Bootstrap JS
 
 - Extras: Real-time clock, search/filter, dynamic content
-
+  
 ⚡ Installation:
+1. Clone the repo:
+git clone https://github.com/username/PolicePortal.git
 
-Clone the repo:
-git clone https://github.com/username/crime-management-system.git
-
-Go to the project folder:
-cd crime-management-system
+2. Go to the project folder:
+cd dbmspolice
 
 Open index.html in your browser. Boom, you're ready to go! 💥
 
