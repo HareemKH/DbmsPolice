@@ -9,17 +9,17 @@ This system is divided into different modules—each serving a very specific pur
 🔑 Key Features:
 Police Portal: Track & manage cases like a pro.
 
-Assigned Cases Portal: Get, update, and organize cases in a flash.
+- Assigned Cases Portal: Get, update, and organize cases in a flash.
 
-Suspect Portal: Dig into suspect profiles with criminal history and activity.
+- Suspect Portal: Dig into suspect profiles with criminal history and activity.
 
-CCTV Footage Portal: Watch live footage or dig through past recordings.
+- CCTV Footage Portal: Watch  past recordings.
 
-Overview Dashboard: See everything at a glance with crime stats, cases, and patrol zones.
+- Overview Dashboard: See everything at a glance with crime stats, cases, and patrol zones.
 
-Alerts System: Get notified about high-priority cases and urgent situations.
+- Alerts System: Get notified about high-priority cases and urgent situations.
 
-Patrol Zones Portal: Monitor zones with an interactive map and live crime data.
+- Patrol Zones Portal: Monitor zones with an interactive map and live crime data.
 
 🚀 Tech Used:
 Frontend: HTML5, CSS3, JavaScript (ES6), Bootstrap 5
