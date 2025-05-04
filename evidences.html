@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Evidences</title>
+    <style>
+        :root {
+            --primary-color: #0a192f;
+            --secondary-color: #172a45;
+            --accent-color: #64ffda;
+            --text-primary: #ccd6f6;
+            --text-secondary: #8892b0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-color);
+            color: var(--text-primary);
+        }
+
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: var(--secondary-color);
+            padding: 20px;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .search-bar {
+            display: flex;
+            margin-bottom: 30px;
+            background: rgba(10, 25, 47, 0.8);
+            border-radius: 8px;
+            padding: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-bar input {
+            flex: 1;
+            padding: 12px 15px;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 16px;
+            outline: none;
+        }
+
+        .search-bar button {
+            background: var(--accent-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 0 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .case-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .case-item {
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            background: rgba(23, 42, 69, 0.5);
+        }
+
+        .case-item:hover {
+            background: rgba(100, 255, 218, 0.1);
+        }
+
+        .case-item.active {
+            background: rgba(100, 255, 218, 0.2);
+        }
+
+        .case-number {
+            margin: 0;
+            font-size: 16px;
+            color: var(--accent-color);
+        }
+
+        .case-parties {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .case-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .case-details {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--secondary-color);
+        }
+
+        .detail-row {
+            display: flex;
+            margin-bottom: 8px;
+        }
+
+        .detail-label {
+            width: 150px;
+            color: var(--text-secondary);
+        }
+
+        .detail-value {
+            flex: 1;
+        }
+
+        .no-selection {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 80vh;
+            text-align: center;
+        }
+
+        .no-selection-icon {
+            font-size: 5rem;
+            color: var(--accent-color);
+            margin-bottom: 1rem;
+        }
+        
+        .evidence-image {
+            max-width: 100%;
+            max-height: 500px;
+            margin-top: 20px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .evidence-section {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--secondary-color);
+        }
+        
+        .evidence-title {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+            }
+            
+            .detail-label {
+                width: 100%;
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <h2><i class="fas fa-gavel"></i> Evidences </h2>
+            
+            <div class="search-bar">
+                <input type="text" placeholder="Search cases..." id="searchInput">
+                <button id="searchButton"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <ul class="case-list" id="caseList">
+                <!-- Cases will be added here by JavaScript -->
+            </ul>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <div class="no-selection">
+                <div class="no-selection-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <h3>Select a Case</h3>
+                <p>Choose a case from the sidebar to view details</p>
+            </div>
+            
+            <!-- This will be populated when a case is selected -->
+            <div id="caseDetails" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+                    <div>
+                        <h1 id="caseTitle"></h1>
+                        <p id="caseParties" style="color: var(--text-secondary);"></p>
+                    </div>
+                    <button id="backButton" style="background: none; border: 1px solid var(--accent-color); color: var(--accent-color); padding: 8px 16px; border-radius: 4px; cursor: pointer;">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                </div>
+                
+                <div id="caseInfo">
+                    <!-- Case details will be added here by JavaScript -->
+                </div>
+                
+                <div class="evidence-section">
+                    <h3 class="evidence-title"><i class="fas fa-image"></i> Evidence Report</h3>
+                    <div id="evidenceImageContainer">
+                        <!-- Evidence image will be added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Font Awesome for icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+
+    <script>
+        // Sample data based on your table
+        const casesData = [
+            {
+                id: 1,
+                releaseWritNo: "110/2025/Karachi (South)",
+                caseNo: "Criminal Bail Application 1480/2025",
+                parties: "Mumtaz ali son of Ghulam Farooq V/S The State",
+                courtName: "Additional District & Sessions Judge I, Karachi (South), Karachi (South), Sindh",
+                firNo: "286/2025, Darakhshan, Karachi (South)",
+                staffName: "huzaifa Diwan",
+                date: "03-May-2025",
+                evidenceImage: "ID1.png" // Added image reference
+            },
+            {
+                id: 2,
+                releaseWritNo: "14/2025/Karachi (South)",
+                caseNo: "Bail Application in Cases 17/2025",
+                parties: "Amir @ Kupi s/o M. Ismail V/S The State",
+                courtName: "Civil Judge & Judicial Magistrate IV, Karachi (South), Karachi (South), Sindh",
+                firNo: "93/2025, Kalari, Karachi (South)",
+                staffName: "Adeel.Ahmed",
+                date: "02-May-2025",
+                evidenceImage: "ID2.png" // Added image reference
+            },
+            {
+                id: 3,
+                releaseWritNo: "111/2025/Karachi (South)",
+                caseNo: "Criminal Bail Application 1377/2025",
+                parties: "Farooq son of Khadim V/S The State",
+                courtName: "Additional District & Sessions Judge I, Karachi (South), Karachi (South), Sindh",
+                firNo: "147/2025, Preedy, Karachi (South)",
+                staffName: "huzaifa Diwan",
+                date: "02-May-2025",
+                evidenceImage: "ID3.png" // Added image reference
+            },
+            {
+                id: 4,
+                releaseWritNo: "13/2025/Karachi (South)",
+                caseNo: "Bail Application in Cases 15/2025",
+                parties: "THE STATE V/S RANA MUHAMMAD NADEEM",
+                courtName: "Civil Judge & Judicial Magistrate IV, Karachi (South), Karachi (South), Sindh",
+                firNo: "70/2025, Risala, Karachi (South)",
+                staffName: "Adeel.Ahmed",
+                date: "30-Apr-2025",
+                evidenceImage: "ID4.png" // Added image reference
+            },
+            {
+                id: 5,
+                releaseWritNo: "73/2025/Karachi (South)",
+                caseNo: "PPC 1267/2023",
+                parties: "the State V/S M. Asif",
+                courtName: "Additional District & Sessions Judge IX,Karachi (South), Karachi (South), Sindh",
+                firNo: "329/2022, PS Tipu Sultan, Karachi (South)",
+                staffName: "NAJEEBULLAH",
+                date: "30-Apr-2025",
+                evidenceImage: "ID5.png" // Added image reference
+            },
+            {
+                id: 6,
+                releaseWritNo: "72/2025/Karachi (South)",
+                caseNo: "PPC 1268/2023",
+                parties: "the State V/S M. Asif, Syed Hanif and Amir",
+                courtName: "Additional District & Sessions Judge IX,Karachi (South), Karachi (South), Sindh",
+                firNo: "358/2022, PS Tipu Sultan, Karachi (South)",
+                staffName: "NAJEEBULLAH",
+                date: "30-Apr-2025",
+                evidenceImage: "ID6.png" // Added image reference
+            },
+            {
+                id: 7,
+                releaseWritNo: "109/2025/Karachi (South)",
+                caseNo: "Criminal Bail Application 1353/2025",
+                parties: "Syed Balach Shah son of Syed Hanif Shah V/S The State",
+                courtName: "Additional District & Sessions Judge I, Karachi (South), Karachi (South), Sindh",
+                firNo: "156/2025, Mehmoodabad(East), Karachi (South)",
+                staffName: "huzaifa Diwan",
+                date: "30-Apr-2025",
+                evidenceImage: "ID7.png" // Added image reference
+            },
+            {
+                id: 8,
+                releaseWritNo: "143/2025/Karachi (South)",
+                caseNo: "Sindh Arms ACT, 2013 295/2025",
+                parties: "THE STATE V/S MOHAMMAD KASHIF son of Abdul Hameed",
+                courtName: "Additional District & Sessions Judge V, Karachi (South), Karachi (South), Sindh",
+                firNo: "407/2024, Saddar, Karachi (South)",
+                staffName: "Abdul Samad Memon",
+                date: "30-Apr-2025",
+                evidenceImage: "ID8.png" // Added image reference
+            }
+        ];
+
+        // DOM elements
+        const caseList = document.getElementById('caseList');
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const mainContent = document.getElementById('mainContent');
+        const noSelection = document.querySelector('.no-selection');
+        const caseDetails = document.getElementById('caseDetails');
+        const caseTitle = document.getElementById('caseTitle');
+        const caseParties = document.getElementById('caseParties');
+        const caseInfo = document.getElementById('caseInfo');
+        const backButton = document.getElementById('backButton');
+        const evidenceImageContainer = document.getElementById('evidenceImageContainer');
+
+        // Current selected case
+        let selectedCase = null;
+
+        // Initialize the app
+        function init() {
+            renderCaseList(casesData);
+            setupEventListeners();
+        }
+
+        // Render case list
+        function renderCaseList(cases) {
+            caseList.innerHTML = '';
+            
+            cases.forEach(caseItem => {
+                const li = document.createElement('li');
+                li.className = 'case-item';
+                li.innerHTML = `
+                    <h3 class="case-number">${caseItem.releaseWritNo}</h3>
+                    <p class="case-parties">${caseItem.parties}</p>
+                    <div class="case-meta">
+                        <span>${caseItem.caseNo}</span>
+                        <span>${caseItem.date}</span>
+                    </div>
+                    <div class="case-details" id="case-${caseItem.id}-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Court Name:</span>
+                            <span class="detail-value">${caseItem.courtName}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">FIR No:</span>
+                            <span class="detail-value">${caseItem.firNo}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Staff/Official:</span>
+                            <span class="detail-value">${caseItem.staffName}</span>
+                        </div>
+                    </div>
+                `;
+                
+                li.addEventListener('click', () => selectCase(caseItem));
+                caseList.appendChild(li);
+            });
+        }
+
+        // Select a case
+        function selectCase(caseItem) {
+            selectedCase = caseItem;
+            
+            // Update UI
+            noSelection.style.display = 'none';
+            caseDetails.style.display = 'block';
+            
+            caseTitle.textContent = caseItem.releaseWritNo;
+            caseParties.textContent = caseItem.parties;
+            
+            // Render case info
+            caseInfo.innerHTML = `
+                <div class="detail-row">
+                    <span class="detail-label">Case Number:</span>
+                    <span class="detail-value">${caseItem.caseNo}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Court Name:</span>
+                    <span class="detail-value">${caseItem.courtName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">FIR No:</span>
+                    <span class="detail-value">${caseItem.firNo}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Staff/Official:</span>
+                    <span class="detail-value">${caseItem.staffName}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Date:</span>
+                    <span class="detail-value">${caseItem.date}</span>
+                </div>
+            `;
+            
+            // Render evidence image
+            evidenceImageContainer.innerHTML = `
+                <img src="${caseItem.evidenceImage}" alt="Evidence Report for Case ${caseItem.releaseWritNo}" class="evidence-image">
+                <p style="margin-top: 10px; color: var(--text-secondary);">Evidence report for ${caseItem.releaseWritNo}</p>
+            `;
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Back button
+            backButton.addEventListener('click', () => {
+                caseDetails.style.display = 'none';
+                noSelection.style.display = 'flex';
+                selectedCase = null;
+            });
+            
+            // Search functionality
+            searchButton.addEventListener('click', searchCases);
+            searchInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') {
+                    searchCases();
+                }
+            });
+        }
+
+        // Search cases
+        function searchCases() {
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            if (searchTerm === '') {
+                renderCaseList(casesData);
+                return;
+            }
+            
+            const filtered = casesData.filter(caseItem => 
+                caseItem.releaseWritNo.toLowerCase().includes(searchTerm) ||
+                caseItem.caseNo.toLowerCase().includes(searchTerm) ||
+                caseItem.parties.toLowerCase().includes(searchTerm) ||
+                caseItem.firNo.toLowerCase().includes(searchTerm) ||
+                caseItem.staffName.toLowerCase().includes(searchTerm)
+            );
+            
+            renderCaseList(filtered);
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>

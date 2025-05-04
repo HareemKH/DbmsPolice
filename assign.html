@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Assignment - Police Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #00bcd4;
+      --primary-dark: #008ba3;
+      --secondary-color: #0e1012;
+      --sidebar-color: #16181d;
+      --card-bg: #1f2227;
+      --card-hover: #25282e;
+      --border-color: #2c2f36;
+      --text-light: #eee;
+      --text-muted: #888;
+      --accent-red: #ff5252;
+      --accent-orange: #ff9800;
+      --accent-green: #4caf50;
+      --accent-purple: #9c27b0;
+    }
+
+    body {
+      background: var(--secondary-color);
+      color: var(--text-light);
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      background: var(--sidebar-color);
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .topbar h4 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar h4 i {
+      font-size: 1.5rem;
+    }
+
+    .clock {
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      font-weight: 500;
+      background: rgba(0, 0, 0, 0.2);
+      padding: 8px 15px;
+      border-radius: 50px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .assignment-section {
+      padding: 30px;
+      max-width: 1800px;
+      margin: 0 auto;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .search-bar {
+      margin-bottom: 0;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 50px;
+    }
+
+    .search-bar:focus {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      box-shadow: 0 0 0 0.25rem rgba(0, 188, 212, 0.25);
+    }
+
+    .search-bar::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .filter-select {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      padding: 8px 15px;
+      border-radius: 6px;
+      min-width: 180px;
+    }
+
+    .filter-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 0.25rem rgba(0, 188, 212, 0.25);
+    }
+
+    .case-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .case-table th {
+      background: var(--sidebar-color);
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+      color: var(--primary-color);
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .case-table td {
+      padding: 15px;
+      border-bottom: 1px solid var(--border-color);
+      vertical-align: middle;
+    }
+
+    .case-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .case-table tr:hover {
+      background: var(--card-hover);
+    }
+
+    .case-id {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .case-priority {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .priority-high {
+      background: var(--accent-red);
+    }
+
+    .priority-medium {
+      background: var(--accent-orange);
+      color: #333;
+    }
+
+    .priority-low {
+      background: var(--accent-green);
+    }
+
+    .case-status {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .status-new {
+      background: #2196f3;
+    }
+
+    .status-investigation {
+      background: var(--accent-purple);
+    }
+
+    .status-closed {
+      background: var(--accent-green);
+    }
+
+    .status-reopened {
+      background: #ff9800;
+    }
+
+    .officer-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(0, 188, 212, 0.1);
+      padding: 5px 10px;
+      border-radius: 50px;
+      font-size: 0.85rem;
+    }
+
+    .officer-avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 0.7rem;
+    }
+
+    .action-btn {
+      background: none;
+      border: none;
+      color: var(--primary-color);
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: color 0.3s;
+      padding: 5px;
+    }
+
+    .action-btn:hover {
+      color: var(--primary-dark);
+    }
+
+    .assign-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .assign-btn:hover {
+      background: var(--primary-dark);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+      gap: 5px;
+    }
+
+    .page-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      padding: 8px 15px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .page-btn:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .page-btn.active {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .badge-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+    }
+
+    .evidence-badge {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    @media (max-width: 1200px) {
+      .case-table {
+        display: block;
+        overflow-x: auto;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .assignment-section {
+        padding: 20px 15px;
+      }
+      
+      .topbar h4 {
+        font-size: 1.4rem;
+      }
+      
+      .filter-controls {
+        flex-direction: column;
+      }
+      
+      .filter-select {
+        width: 100%;
+      }
+    }
+
+    /* Case Details Modal */
+    .case-details-modal .modal-content {
+      background: var(--card-bg);
+      color: var(--text-light);
+      border-radius: 15px;
+      border: 1px solid var(--border-color);
+    }
+
+    .case-details-modal .modal-header {
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .case-details-modal .modal-title {
+      color: var(--primary-color);
+    }
+
+    .case-details-modal .close {
+      color: var(--text-light);
+      opacity: 0.8;
+    }
+
+    .case-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .case-info-item h5 {
+      margin: 0 0 8px 0;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .case-info-item p {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .case-description {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+    }
+
+    .evidence-list {
+      margin-top: 20px;
+    }
+
+    .evidence-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .evidence-item:last-child {
+      border-bottom: none;
+    }
+
+    .evidence-icon {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .evidence-details h6 {
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .evidence-details p {
+      margin: 5px 0 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .activity-timeline {
+      margin-top: 20px;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 30px;
+      margin-bottom: 20px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 0;
+      height: 100%;
+      width: 2px;
+      background: var(--primary-color);
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.7rem;
+    }
+
+    .timeline-content {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .timeline-time {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+    }
+
+    .timeline-text {
+      font-size: 0.9rem;
+    }
+
+    .officer-assignment {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .officer-select {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-light);
+      padding: 8px 15px;
+      border-radius: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <h4><i class='bx bx-task'></i> Case Assignment System</h4>
+    <div class="clock" id="clock"><i class='bx bx-time-five'></i> <span id="time"></span> | <span id="date"></span></div>
+  </div>
+
+  <div class="assignment-section">
+    <div class="dashboard-header">
+      <input type="text" id="searchInput" class="form-control search-bar" placeholder="Search cases...">
+      <button class="btn btn-primary" id="newCaseBtn"><i class='bx bx-plus'></i> New Case</button>
+    </div>
+
+    <div class="filter-controls">
+      <select class="filter-select" id="priorityFilter">
+        <option value="">All Priorities</option>
+        <option value="high">High Priority</option>
+        <option value="medium">Medium Priority</option>
+        <option value="low">Low Priority</option>
+      </select>
+
+      <select class="filter-select" id="statusFilter">
+        <option value="">All Statuses</option>
+        <option value="new">New</option>
+        <option value="investigation">Under Investigation</option>
+        <option value="closed">Closed</option>
+        <option value="reopened">Reopened</option>
+      </select>
+
+      <select class="filter-select" id="officerFilter">
+        <option value="">All Officers</option>
+        <option value="JD">John Doe</option>
+        <option value="AS">Alice Smith</option>
+        <option value="RJ">Robert Johnson</option>
+        <option value="MB">Maria Brown</option>
+      </select>
+
+      <select class="filter-select" id="dateFilter">
+        <option value="">All Time</option>
+        <option value="today">Today</option>
+        <option value="week">This Week</option>
+        <option value="month">This Month</option>
+      </select>
+    </div>
+
+    <div class="table-responsive">
+      <table class="case-table">
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Title</th>
+            <th>Priority</th>
+            <th>Status</th>
+            <th>Assigned Officers</th>
+            <th>Date Reported</th>
+            <th>Evidence</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="casesTableBody">
+          <!-- Cases will be loaded here -->
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination" id="pagination">
+      <!-- Pagination will be generated here -->
+    </div>
+  </div>
+
+  <!-- Case Details Modal -->
+  <div class="modal fade case-details-modal" id="caseDetailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="caseModalTitle">Case Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="caseModalBody">
+          <!-- Content will be loaded dynamically -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save Changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assign Officer Modal -->
+  <div class="modal fade" id="assignOfficerModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content" style="background: var(--card-bg); color: var(--text-light); border: 1px solid var(--border-color);">
+        <div class="modal-header" style="border-bottom: 1px solid var(--border-color);">
+          <h5 class="modal-title">Assign Officer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="officer-assignment">
+            <select class="officer-select" id="officerSelect">
+              <option value="">Select Officer</option>
+              <option value="JD">John Doe (Detective)</option>
+              <option value="AS">Alice Smith (Sergeant)</option>
+              <option value="RJ">Robert Johnson (Patrol Officer)</option>
+              <option value="MB">Maria Brown (Investigator)</option>
+            </select>
+            <button class="btn btn-primary">Assign</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Clock functionality
+    function updateClock() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString();
+      const dateStr = now.toLocaleDateString('en-US', { 
+        weekday: 'short', 
+        year: 'numeric', 
+        month: 'short', 
+        day: 'numeric' 
+      });
+      
+      document.getElementById('time').textContent = timeStr;
+      document.getElementById('date').textContent = dateStr;
+    }
+    
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // Sample case data
+    const cases = [
+      {
+        id: "C-2023-0456",
+        title: "Armed Robbery - Main Street Jewelry",
+        priority: "high",
+        status: "investigation",
+        assignedOfficers: ["JD", "AS"],
+        dateReported: "2023-06-15T09:30:00",
+        evidence: ["surveillance.mp4", "fingerprints.pdf", "witness1.txt"],
+        description: "Two masked individuals entered the jewelry store at approximately 9:15am, brandishing firearms. They took an estimated $50,000 worth of merchandise before fleeing in a black sedan.",
+        location: "123 Main Street",
+        reporter: "Sarah Johnson (Store Manager)",
+        category: "Robbery",
+        activities: [
+          {
+            time: "2023-06-15T10:45:00",
+            text: "Detective John Doe assigned to lead investigation"
+          },
+          {
+            time: "2023-06-15T11:30:00",
+            text: "Surveillance footage collected from nearby businesses"
+          },
+          {
+            time: "2023-06-15T14:15:00",
+            text: "Witness statements taken from 3 employees"
+          }
+        ]
+      },
+      {
+        id: "C-2023-0457",
+        title: "Burglary - Riverside Apartments",
+        priority: "medium",
+        status: "investigation",
+        assignedOfficers: ["RJ"],
+        dateReported: "2023-06-14T22:15:00",
+        evidence: ["broken_window.jpg", "stolen_items.txt"],
+        description: "Apartment 4B reported a break-in while occupants were away. Entry was made through a bedroom window. Several electronics and jewelry items were stolen.",
+        location: "456 Riverside Drive, Apt 4B",
+        reporter: "Michael Chen (Neighbor)",
+        category: "Burglary",
+        activities: [
+          {
+            time: "2023-06-14T23:00:00",
+            text: "Officer Robert Johnson responded to the scene"
+          },
+          {
+            time: "2023-06-15T09:00:00",
+            text: "Crime scene processed for fingerprints"
+          }
+        ]
+      },
+      {
+        id: "C-2023-0458",
+        title: "Vandalism - City Park",
+        priority: "low",
+        status: "new",
+        assignedOfficers: [],
+        dateReported: "2023-06-15T07:00:00",
+        evidence: ["graffiti.jpg", "damage_report.pdf"],
+        description: "Extensive graffiti and property damage reported in the north section of City Park. Multiple benches and playground equipment vandalized.",
+        location: "City Park - North Section",
+        reporter: "Park Maintenance Crew",
+        category: "Vandalism",
+        activities: [
+          {
+            time: "2023-06-15T07:30:00",
+            text: "Case reported by park maintenance staff"
+          }
+        ]
+      },
+      {
+        id: "C-2023-0459",
+        title: "Hit and Run - Oak Avenue",
+        priority: "high",
+        status: "investigation",
+        assignedOfficers: ["MB", "RJ"],
+        dateReported: "2023-06-13T18:45:00",
+        evidence: ["vehicle_part.jpg", "witness2.txt", "traffic_cam.mp4"],
+        description: "Pedestrian struck by a dark-colored SUV that fled the scene. Victim transported to hospital with serious injuries. Vehicle believed to have front-end damage.",
+        location: "Oak Avenue & 5th Street",
+        reporter: "Emily Wilson (Witness)",
+        category: "Traffic",
+        activities: [
+          {
+            time: "2023-06-13T19:15:00",
+            text: "Investigator Maria Brown assigned to case"
+          },
+          {
+            time: "2023-06-14T10:00:00",
+            text: "Traffic camera footage reviewed"
+          },
+          {
+            time: "2023-06-14T15:30:00",
+            text: "Vehicle part collected as evidence"
+          }
+        ]
+      },
+      {
+        id: "C-2023-0460",
+        title: "Fraud - Online Scam",
+        priority: "medium",
+        status: "investigation",
+        assignedOfficers: ["AS"],
+        dateReported: "2023-06-12T14:20:00",
+        evidence: ["email_screenshots.pdf", "bank_records.pdf"],
+        description: "Victim reported losing $12,000 in an online investment scam. Multiple victims may be involved based on similar reports.",
+        location: "Online",
+        reporter: "David Miller (Victim)",
+        category: "Fraud",
+        activities: [
+          {
+            time: "2023-06-12T15:00:00",
+            text: "Sergeant Alice Smith assigned to case"
+          },
+          {
+            time: "2023-06-13T11:00:00",
+            text: "Bank records subpoenaed"
+          }
+        ]
+      },
+      {
+        id: "C-2023-0461",
+        title: "Domestic Disturbance - Maple Street",
+        priority: "medium",
+        status: "closed",
+        assignedOfficers: ["RJ"],
+        dateReported: "2023-06-10T21:30:00",
+        evidence: ["911_call.mp3", "officer_report.pdf"],
+        description: "Neighbors reported loud argument and possible physical altercation. Situation de-escalated upon police arrival. No injuries reported.",
+        location: "789 Maple Street",
+        reporter: "Anonymous Neighbor",
+        category: "Domestic",
+        activities: [
+          {
+            time: "2023-06-10T21:45:00",
+            text: "Officer Robert Johnson responded to call"
+          },
+          {
+            time: "2023-06-11T09:00:00",
+            text: "Follow-up visit conducted"
+          },
+          {
+            time: "2023-06-12T14:00:00",
+            text: "Case closed after mediation"
+          }
+        ]
+      },
+      {
+        id: "C-2023-0462",
+        title: "Drug Possession - Alley Behind Club",
+        priority: "high",
+        status: "investigation",
+        assignedOfficers: ["JD", "MB"],
+        dateReported: "2023-06-15T02:15:00",
+        evidence: ["drugs_seized.jpg", "suspect_photo.jpg"],
+        description: "During routine patrol, officers discovered a significant quantity of illegal substances and paraphernalia. One suspect apprehended at the scene.",
+        location: "Alley behind Neon Club",
+        reporter: "Officer Robert Johnson",
+        category: "Narcotics",
+        activities: [
+          {
+            time: "2023-06-15T02:30:00",
+            text: "Detective John Doe notified"
+          },
+          {
+            time: "2023-06-15T03:00:00",
+            text: "Evidence collected and logged"
+          },
+          {
+            time: "2023-06-15T10:00:00",
+            text: "Search warrant being prepared"
+          }
+        ]
+      },
+      {
+        id: "C-2023-0463",
+        title: "Missing Person - College Student",
+        priority: "high",
+        status: "investigation",
+        assignedOfficers: ["AS", "MB"],
+        dateReported: "2023-06-14T20:00:00",
+        evidence: ["last_seen.jpg", "phone_records.pdf"],
+        description: "20-year-old college student last seen leaving campus library at 11pm. Has not returned home or contacted friends/family.",
+        location: "University Campus Area",
+        reporter: "Lisa Thompson (Mother)",
+        category: "Missing Person",
+        activities: [
+          {
+            time: "2023-06-14T21:00:00",
+            text: "Missing person report filed"
+          },
+          {
+            time: "2023-06-15T08:00:00",
+            text: "Detectives assigned to case"
+          },
+          {
+            time: "2023-06-15T12:00:00",
+            text: "Phone records requested"
+          }
+        ]
+      }
+    ];
+
+    // Officers data
+    const officers = {
+      "JD": { name: "John Doe", rank: "Detective", badge: "D-247" },
+      "AS": { name: "Alice Smith", rank: "Sergeant", badge: "S-156" },
+      "RJ": { name: "Robert Johnson", rank: "Patrol Officer", badge: "P-892" },
+      "MB": { name: "Maria Brown", rank: "Investigator", badge: "I-331" }
+    };
+
+    // Load cases into table
+    function loadCases() {
+      const tableBody = document.getElementById('casesTableBody');
+      tableBody.innerHTML = '';
+
+      cases.forEach(caseItem => {
+        const row = document.createElement('tr');
+        
+        // Format date
+        const reportedDate = new Date(caseItem.dateReported);
+        const formattedDate = reportedDate.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          year: 'numeric'
+        });
+        
+        // Priority badge
+        const priorityClass = caseItem.priority === 'high' ? 'priority-high' : 
+                            caseItem.priority === 'medium' ? 'priority-medium' : 'priority-low';
+        const priorityText = caseItem.priority === 'high' ? 'High' : 
+                           caseItem.priority === 'medium' ? 'Medium' : 'Low';
+        
+        // Status badge
+        const statusClass = caseItem.status === 'new' ? 'status-new' :
+                          caseItem.status === 'investigation' ? 'status-investigation' :
+                          caseItem.status === 'closed' ? 'status-closed' : 'status-reopened';
+        const statusText = caseItem.status === 'new' ? 'New' :
+                         caseItem.status === 'investigation' ? 'Investigation' :
+                         caseItem.status === 'closed' ? 'Closed' : 'Reopened';
+        
+        // Assigned officers
+        let officersBadges = '';
+        caseItem.assignedOfficers.forEach(officerId => {
+          const officer = officers[officerId];
+          officersBadges += `
+            <div class="officer-badge">
+              <div class="officer-avatar">${officerId}</div>
+              <span>${officer.name}</span>
+            </div>
+          `;
+        });
+        
+        if (caseItem.assignedOfficers.length === 0) {
+          officersBadges = '<span class="text-muted">Unassigned</span>';
+        }
+        
+        // Evidence badges
+        let evidenceBadges = '';
+        caseItem.evidence.forEach(evidence => {
+          let icon = 'bx-file';
+          if (evidence.endsWith('.jpg') || evidence.endsWith('.png')) icon = 'bx-image';
+          if (evidence.endsWith('.mp4') || evidence.endsWith('.mov')) icon = 'bx-video';
+          if (evidence.endsWith('.mp3')) icon = 'bx-microphone';
+          
+          evidenceBadges += `
+            <div class="evidence-badge">
+              <i class='bx ${icon}'></i>
+              <span>${evidence}</span>
+            </div>
+          `;
+        });
+        
+        row.innerHTML = `
+          <td class="case-id">${caseItem.id}</td>
+          <td>${caseItem.title}</td>
+          <td><span class="case-priority ${priorityClass}">${priorityText}</span></td>
+          <td><span class="case-status ${statusClass}">${statusText}</span></td>
+          <td>${officersBadges}</td>
+          <td>${formattedDate}</td>
+          <td><div class="badge-container">${evidenceBadges}</div></td>
+          <td>
+            <button class="action-btn" onclick="viewCaseDetails('${caseItem.id}')" title="View Details">
+              <i class='bx bx-show'></i>
+            </button>
+            <button class="action-btn" onclick="assignOfficer('${caseItem.id}')" title="Assign Officer">
+              <i class='bx bx-user-plus'></i>
+            </button>
+            <button class="action-btn" onclick="editCase('${caseItem.id}')" title="Edit Case">
+              <i class='bx bx-edit'></i>
+            </button>
+          </td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+      
+      // Generate pagination
+      generatePagination();
+    }
+
+    // Generate pagination
+    function generatePagination() {
+      const pagination = document.getElementById('pagination');
+      pagination.innerHTML = '';
+      
+      for (let i = 1; i <= 5; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = 'page-btn' + (i === 1 ? ' active' : '');
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => {
+          document.querySelectorAll('.page-btn').forEach(btn => btn.classList.remove('active'));
+          pageBtn.classList.add('active');
+          // In a real app, this would load the corresponding page of cases
+        };
+        
+        pagination.appendChild(pageBtn);
+      }
+    }
+
+    // View case details
+    function viewCaseDetails(caseId) {
+      const caseItem = cases.find(c => c.id === caseId);
+      if (!caseItem) return;
+      
+      const modalTitle = document.getElementById('caseModalTitle');
+      const modalBody = document.getElementById('caseModalBody');
+      
+      modalTitle.textContent = `Case ${caseItem.id} Details`;
+      
+      // Format activities for timeline
+      let activitiesHtml = '';
+      caseItem.activities.forEach(activity => {
+        const activityTime = new Date(activity.time);
+        const formattedTime = activityTime.toLocaleString('en-US', {
+          month: 'short',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        activitiesHtml += `
+          <div class="timeline-item">
+            <div class="timeline-dot"><i class='bx bx-check'></i></div>
+            <div class="timeline-content">
+              <div class="timeline-time">${formattedTime}</div>
+              <div class="timeline-text">${activity.text}</div>
+            </div>
+          </div>
+        `;
+      });
+      
+      // Assigned officers
+      let assignedOfficersHtml = '';
+      caseItem.assignedOfficers.forEach(officerId => {
+        const officer = officers[officerId];
+        assignedOfficersHtml += `
+          <div class="officer-badge" style="margin-bottom: 10px;">
+            <div class="officer-avatar">${officerId}</div>
+            <div>
+              <h6 style="margin: 0;">${officer.name}</h6>
+              <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">${officer.rank} (${officer.badge})</p>
+            </div>
+          </div>
+        `;
+      });
+      
+      if (caseItem.assignedOfficers.length === 0) {
+        assignedOfficersHtml = '<p class="text-muted">No officers assigned</p>';
+      }
+      
+      // Evidence list
+      let evidenceHtml = '';
+      caseItem.evidence.forEach(evidence => {
+        let icon = 'bx-file';
+        if (evidence.endsWith('.jpg') || evidence.endsWith('.png')) icon = 'bx-image';
+        if (evidence.endsWith('.mp4') || evidence.endsWith('.mov')) icon = 'bx-video';
+        if (evidence.endsWith('.mp3')) icon = 'bx-microphone';
+        
+        evidenceHtml += `
+          <div class="evidence-item">
+            <i class='bx ${icon} evidence-icon'></i>
+            <div class="evidence-details">
+              <h6>${evidence}</h6>
+              <p>Uploaded: ${new Date(caseItem.dateReported).toLocaleDateString()}</p>
+            </div>
+          </div>
+        `;
+      });
+      
+      modalBody.innerHTML = `
+        <div class="case-info-grid">
+          <div class="case-info-item">
+            <h5>Case ID</h5>
+            <p>${caseItem.id}</p>
+          </div>
+          <div class="case-info-item">
+            <h5>Status</h5>
+            <p><span class="case-status ${caseItem.status === 'new' ? 'status-new' :
+              caseItem.status === 'investigation' ? 'status-investigation' :
+              caseItem.status === 'closed' ? 'status-closed' : 'status-reopened'}">
+              ${caseItem.status === 'new' ? 'New' :
+               caseItem.status === 'investigation' ? 'Under Investigation' :
+               caseItem.status === 'closed' ? 'Closed' : 'Reopened'}
+            </span></p>
+          </div>
+          <div class="case-info-item">
+            <h5>Priority</h5>
+            <p><span class="case-priority ${caseItem.priority === 'high' ? 'priority-high' : 
+              caseItem.priority === 'medium' ? 'priority-medium' : 'priority-low'}">
+              ${caseItem.priority === 'high' ? 'High' : 
+               caseItem.priority === 'medium' ? 'Medium' : 'Low'}
+            </span></p>
+          </div>
+          <div class="case-info-item">
+            <h5>Category</h5>
+            <p>${caseItem.category}</p>
+          </div>
+          <div class="case-info-item">
+            <h5>Location</h5>
+            <p>${caseItem.location}</p>
+          </div>
+          <div class="case-info-item">
+            <h5>Date Reported</h5>
+            <p>${new Date(caseItem.dateReported).toLocaleString()}</p>
+          </div>
+          <div class="case-info-item">
+            <h5>Reporter</h5>
+            <p>${caseItem.reporter}</p>
+          </div>
+        </div>
+        
+        <div class="case-description">
+          <h5>Description</h5>
+          <p>${caseItem.description}</p>
+        </div>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <h5>Assigned Officers</h5>
+            ${assignedOfficersHtml}
+          </div>
+          <div class="col-md-6">
+            <div class="evidence-list">
+              <h5>Evidence</h5>
+              ${evidenceHtml}
+            </div>
+          </div>
+        </div>
+        
+        <div class="activity-timeline">
+          <h5>Case Activity</h5>
+          ${activitiesHtml}
+        </div>
+      `;
+      
+      // Show the modal
+      const modal = new bootstrap.Modal(document.getElementById('caseDetailsModal'));
+      modal.show();
+    }
+
+    // Assign officer to case
+    function assignOfficer(caseId) {
+      const assignModal = new bootstrap.Modal(document.getElementById('assignOfficerModal'));
+      assignModal.show();
+      
+      // In a real app, this would handle the actual assignment
+      document.querySelector('#assignOfficerModal .btn-primary').onclick = () => {
+        const officerId = document.getElementById('officerSelect').value;
+        if (officerId) {
+          const caseItem = cases.find(c => c.id === caseId);
+          if (caseItem && !caseItem.assignedOfficers.includes(officerId)) {
+            caseItem.assignedOfficers.push(officerId);
+            loadCases();
+            assignModal.hide();
+            alert(`Officer assigned to case ${caseId}`);
+          }
+        }
+      };
+    }
+
+    // Edit case (placeholder function)
+    function editCase(caseId) {
+      alert(`Edit functionality for case ${caseId} would open here`);
+    }
+
+    // New case button
+    document.getElementById('newCaseBtn').addEventListener('click', () => {
+      alert('New case form would open here');
+    });
+
+    // Filter functionality (placeholder)
+    document.querySelectorAll('.filter-select').forEach(select => {
+      select.addEventListener('change', () => {
+        // In a real app, this would filter the cases
+        console.log(`Filter by ${select.id}: ${select.value}`);
+      });
+    });
+
+    // Search functionality
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const filter = this.value.toLowerCase();
+      document.querySelectorAll('#casesTableBody tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(filter) ? '' : 'none';
+      });
+    });
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', loadCases);
+  </script>
+</body>
+</html>
